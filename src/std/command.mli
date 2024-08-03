@@ -280,40 +280,5 @@ val eval : ?eval_config:Climate.Eval_config.t -> 'a t -> Climate.Command_line.Ra
     handled by printing an error message to stderr and exiting. *)
 val run : ?eval_config:Climate.Eval_config.t -> 'a t -> 'a
 
-module type Infix_operators_sig = sig
-  type 'a t
-
-  val ( $ ) : ('a -> 'b) t -> 'a t -> 'b t
-  val ( <*> ) : ('a -> 'b) t -> 'a t -> 'b t
-  val ( <* ) : 'a t -> unit t -> 'a t
-  val ( *> ) : unit t -> 'a t -> 'a t
-  val ( >>| ) : 'a t -> ('a -> 'b) -> 'b t
-end
-
-module Infix_operators : Infix_operators_sig with type 'a t := 'a Arg.t
-
 val ( let+ ) : 'a Arg.t -> ('a -> 'b) -> 'b Arg.t
 val ( and+ ) : 'a Arg.t -> 'b Arg.t -> ('a * 'b) Arg.t
-
-module Let_syntax : sig
-    (** Substituted below. *)
-    type 'a t
-
-    include Infix_operators_sig with type 'a t := 'a t
-
-    module Let_syntax : sig
-        (** Substituted below. *)
-        type 'a t
-
-        val map : 'a t -> f:('a -> 'b) -> 'b t
-        val both : 'a t -> 'b t -> ('a * 'b) t
-
-        module Open_on_rhs : sig
-          include Infix_operators_sig with type 'a t := 'a t
-          module Param = Param
-          module Arg = Arg
-        end
-      end
-      with type 'a t := 'a Arg.t
-  end
-  with type 'a t := 'a Arg.t
