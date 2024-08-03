@@ -20,3 +20,9 @@
 
 (package
  (name climate_cmdliner))
+
+(package
+ (name climate_std)
+ (depends
+  (climate
+   (= :version))))
