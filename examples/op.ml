@@ -1,9 +1,9 @@
 open Stdlib.StdLabels
-open Climate_std
 
 let main =
-  let%map_open.Command op = Arg.pos_req 0 Param.string
-  and args = Arg.pos_right 1 Param.int in
+  let open Command in
+  let+ op = Arg.pos_req 0 Param.string
+  and+ args = Arg.pos_right 1 Param.int in
   let init, op =
     match op with
     | "+" -> 0, ( + )

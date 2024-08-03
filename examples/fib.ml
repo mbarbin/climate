@@ -7,18 +7,18 @@
    . /tmp/completion.sh
    fib <TAB> <TAB> <TAB> <TAB> ...
 *)
-open Climate_std
 
 let () =
   let command =
     Command.make
-      (let%map_open.Command argv0 = Arg.argv0
-       and _ =
+      (let open Command in
+       let+ argv0 = Arg.argv0
+       and+ _ =
          Arg.pos_all
            Param.int
            ~completion:
              (Arg.Completion.reentrant_parse
-                (let%map.Command all = Arg.pos_all Param.int in
+                (let+ all = Arg.pos_all Param.int in
                  let x =
                    match List.rev all with
                    | [] -> 1

@@ -1,8 +1,8 @@
 open Stdlib.StdLabels
-open Climate_std
 
 let main =
-  let%map_open.Command args = Arg.pos_all Param.int in
+  let open Command in
+  let+ args = Arg.pos_all Param.int in
   print_endline (Printf.sprintf "%d" (List.fold_left args ~init:0 ~f:( + )))
 ;;
 
