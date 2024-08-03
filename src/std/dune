@@ -1,3 +1,4 @@
 (library
  (public_name climate_std)
- (libraries (re_export climate)))
+ (libraries
+  (re_export climate)))
