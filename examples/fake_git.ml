@@ -61,19 +61,18 @@ let () =
   let open Command in
   group
     ~desc:"Fake version control"
-    [ subcommand "config" (singleton Arg.unit)
-    ; subcommand "checkout" (singleton checkout)
-    ; subcommand "commit" (singleton commit)
-    ; subcommand "log" (singleton log)
-    ; subcommand
-        "bisect"
-        (group
-           ~default_arg_parser:bisect_common
-           ~desc:"Binary search through previous commits."
-           [ subcommand "start" (singleton bisect_common ~desc:"Start a bisect.")
-           ; subcommand "reset" (singleton bisect_common ~desc:"Stop a bisect.")
-           ])
-    ; subcommand ~hidden:true "__internal" print_completion_script_bash
+    [ "config", singleton Arg.unit
+    ; "checkout", singleton checkout
+    ; "commit", singleton commit
+    ; "log", singleton log
+    ; ( "bisect"
+      , group
+          ~default_arg_parser:bisect_common
+          ~desc:"Binary search through previous commits."
+          [ "start", singleton bisect_common ~desc:"Start a bisect."
+          ; "reset", singleton bisect_common ~desc:"Stop a bisect."
+          ] )
     ]
+    ~hidden:[ "__internal", print_completion_script_bash ]
   |> run
 ;;

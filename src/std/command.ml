@@ -27,7 +27,64 @@ module Arg = struct
   include Climate.Arg_parser
 end
 
-include Climate.Command
+type 'a t =
+  | Group of
+      { default_arg_parser : 'a Arg.t option
+      ; desc : string option
+      ; hidden : (string * 'a t) list
+      ; commands : (string * 'a t) list
+      }
+  | Command of 'a Climate.Command.t
+  | Singleton of
+      { desc : string option
+      ; arg_parser : 'a Climate.Arg_parser.t
+      }
+
+let rec to_command t =
+  match t with
+  | Command t -> t
+  | Singleton { desc; arg_parser } -> Climate.Command.singleton ?desc arg_parser
+  | Group { default_arg_parser; desc; hidden; commands } ->
+    Climate.Command.group
+      ?default_arg_parser
+      ?desc
+      (List.concat
+         [ hidden
+           |> List.map (fun (name, t) ->
+             Climate.Command.subcommand ~hidden:true name (to_command t))
+         ; commands
+           |> List.map (fun (name, t) ->
+             Climate.Command.subcommand ~hidden:false name (to_command t))
+         ])
+;;
+
+let singleton ?desc arg_parser = Singleton { desc; arg_parser }
+
+let group ?default_arg_parser ?desc ?(hidden = []) commands =
+  Group { default_arg_parser; desc; hidden; commands }
+;;
+
+let print_completion_script_bash = Command Climate.Command.print_completion_script_bash
+
+let completion_script_bash
+  ?eval_config
+  ?program_exe_for_reentrant_query
+  ?global_symbol_prefix
+  ?command_hash_in_function_names
+  t
+  ~program_name
+  =
+  Climate.Command.completion_script_bash
+    ?eval_config
+    ?program_exe_for_reentrant_query
+    ?global_symbol_prefix
+    ?command_hash_in_function_names
+    (to_command t)
+    ~program_name
+;;
+
+let eval ?eval_config t raw = Climate.Command.eval ?eval_config (to_command t) raw
+let run ?eval_config t = Climate.Command.run ?eval_config (to_command t)
 
 module type Infix_operators_sig = sig
   type 'a t

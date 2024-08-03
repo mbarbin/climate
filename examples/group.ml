@@ -9,12 +9,8 @@ let term name =
 let () =
   let open Command in
   group
-    [ subcommand "foo" (singleton (term "foo"))
-    ; subcommand
-        "bar"
-        (group
-           ~default_arg_parser:(term "bar")
-           [ subcommand "baz" (singleton (term "baz")) ])
+    [ "foo", singleton (term "foo")
+    ; "bar", group ~default_arg_parser:(term "bar") [ "baz", singleton (term "baz") ]
     ]
   |> run
 ;;

@@ -214,17 +214,18 @@ type 'a t
     well-formed and raises a [Spec_error.E] if iat's invalid. *)
 val singleton : ?desc:string -> 'a Arg.t -> 'a t
 
-type 'a subcommand
-
-val subcommand : ?hidden:bool -> string -> 'a t -> 'a subcommand
-
 (** [group children] returns a command with a hierarchy of subcommands, the
     leaves of which will be either singletons or empty groups (groups with an
     empty list of children). If the [default_arg_parser] argument is passed then
     sequences of subcommands may terminating with this command and will be
     passed with that argument. Performs some checks that each parser is
     well-formed and raises a [Spec_error.E] if an invalid parser is found.*)
-val group : ?default_arg_parser:'a Arg.t -> ?desc:string -> 'a subcommand list -> 'a t
+val group
+  :  ?default_arg_parser:'a Arg.t
+  -> ?desc:string
+  -> ?hidden:(string * 'a t) list
+  -> (string * 'a t) list
+  -> 'a t
 
 (** A command that has the side effect of printing the completion
     script of the entire command it's contained inside. It's safe to
