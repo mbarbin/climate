@@ -1,9 +1,8 @@
-open Climate
+open Climate_std
 
 let term name =
-  let open Arg_parser in
-  let+ x = named_req [ "x" ] string
-  and+ y = named_req [ "y" ] string in
+  let%map_open.Command x = Arg.named_req [ "x" ] Param.string
+  and y = Arg.named_req [ "y" ] Param.string in
   print_endline (Printf.sprintf "%s %s %s" name x y)
 ;;
 

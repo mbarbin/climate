@@ -291,12 +291,12 @@ end
 
 module Infix_operators : Infix_operators_sig with type 'a t := 'a Arg.t
 
+val ( let+ ) : 'a Arg.t -> ('a -> 'b) -> 'b Arg.t
+val ( and+ ) : 'a Arg.t -> 'b Arg.t -> ('a * 'b) Arg.t
+
 module Let_syntax : sig
     (** Substituted below. *)
     type 'a t
-
-    val ( let+ ) : 'a t -> ('a -> 'b) -> 'b t
-    val ( and+ ) : 'a t -> 'b t -> ('a * 'b) t
 
     include Infix_operators_sig with type 'a t := 'a t
 

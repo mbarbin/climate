@@ -1,52 +1,59 @@
 (* Git-like program to exercise completion *)
-open Climate
+open Climate_std
 
-let branch_conv =
-  let open Arg_parser in
-  { string with
+let branch_param =
+  { Command.Param.string with
     default_value_name = "BRANCH"
   ; completion =
       Some
-        (Completion.reentrant_parse
+        (Command.Arg.Completion.reentrant_parse
            ((* This is supposed to simulate passing an alternative
                root directory to git, and having it be respected when
                invoking git while generating completion suggestions. *)
-            let+ _root = named_opt [ "root" ] file in
+            let%map_open.Command _root = Arg.named_opt [ "root" ] Param.file in
             [ "main"; "devel" ]))
   }
 ;;
 
 let checkout =
-  let open Arg_parser in
   (* Multiple different completions for positional arguments *)
-  let+ _branch = pos_req 0 (string_enum [ "foo"; "bar" ])
-  and+ _ = pos_req 1 file
-  and+ _ = pos_right 2 branch_conv in
+  let%map_open.Command _branch = Arg.pos_req 0 (Param.string_enum [ "foo"; "bar" ])
+  and _ = Arg.pos_req 1 Param.file
+  and _ = Arg.pos_right 2 branch_param in
+  ()
+;;
+
+let _checkout2 =
+  (* If you prefer (let+) syntax you can use it as well. *)
+  let open Command in
+  (* Multiple different completions for positional arguments *)
+  let+ _branch = Arg.pos_req 0 (Param.string_enum [ "foo"; "bar" ])
+  and+ _ = Arg.pos_req 1 Param.file
+  and+ _ = Arg.pos_right 2 branch_param in
   ()
 ;;
 
 let commit =
-  let open Arg_parser in
-  let+ _amend = flag [ "amend"; "a" ]
-  and+ _branch = named_opt [ "b"; "branch" ] branch_conv
-  and+ _message = named_opt [ "m"; "message" ] string in
+  let%map_open.Command _amend = Arg.flag [ "amend"; "a" ]
+  and _branch = Arg.named_opt [ "b"; "branch" ] branch_param
+  and _message = Arg.named_opt [ "m"; "message" ] Param.string in
   ()
 ;;
 
 let log =
-  let open Arg_parser in
-  let+ _pretty =
-    named_opt [ "pretty"; "p" ] (string_enum [ "full"; "fuller"; "short"; "oneline" ])
+  let%map_open.Command _pretty =
+    Arg.named_opt
+      [ "pretty"; "p" ]
+      (Param.string_enum [ "full"; "fuller"; "short"; "oneline" ])
   in
   ()
 ;;
 
 let bisect_common =
-  let open Arg_parser in
   (* Mixing subcommands and positional arguments *)
-  let+ _foo = named_opt [ "foo" ] int
-  and+ _bar = flag [ "bar" ]
-  and+ _baz = pos_opt 0 (string_enum [ "x"; "y"; "z" ]) in
+  let%map_open.Command _foo = Arg.named_opt [ "foo" ] Param.int
+  and _bar = Arg.flag [ "bar" ]
+  and _baz = Arg.pos_opt 0 (Param.string_enum [ "x"; "y"; "z" ]) in
   ()
 ;;
 
@@ -54,7 +61,7 @@ let () =
   let open Command in
   group
     ~desc:"Fake version control"
-    [ subcommand "config" (singleton Arg_parser.unit)
+    [ subcommand "config" (singleton Arg.unit)
     ; subcommand "checkout" (singleton checkout)
     ; subcommand "commit" (singleton commit)
     ; subcommand "log" (singleton log)

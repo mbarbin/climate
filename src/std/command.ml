@@ -49,14 +49,14 @@ module Infix_operators = struct
   let ( >>| ) = ( >>| )
 end
 
+include struct
+  open Climate.Arg_parser
+
+  let ( let+ ) = ( let+ )
+  let ( and+ ) = ( and+ )
+end
+
 module Let_syntax = struct
-  include struct
-    open Climate.Arg_parser
-
-    let ( let+ ) = ( let+ )
-    let ( and+ ) = ( and+ )
-  end
-
   include Infix_operators
 
   module Let_syntax = struct

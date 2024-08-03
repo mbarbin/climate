@@ -1,34 +1,48 @@
 (executables
  (names sum)
- (libraries climate)
+ (libraries climate_std)
+ (preprocess
+  (pps ppx_let))
  (modules sum))
 
 (executables
  (names sum2)
- (libraries climate)
+ (libraries climate_std)
+ (preprocess
+  (pps ppx_let))
  (modules sum2))
 
 (executables
  (names op)
- (libraries climate)
+ (libraries climate_std)
+ (preprocess
+  (pps ppx_let))
  (modules op))
 
 (executables
  (names group)
- (libraries climate)
+ (libraries climate_std)
+ (preprocess
+  (pps ppx_let))
  (modules group))
 
 (executables
  (names optional_args)
- (libraries climate)
+ (libraries climate_std)
+ (preprocess
+  (pps ppx_let))
  (modules optional_args))
 
 (executables
  (names fake_git)
- (libraries climate)
+ (libraries climate_std)
+ (preprocess
+  (pps ppx_let))
  (modules fake_git))
 
 (executables
  (names fib)
- (libraries climate)
+ (libraries climate_std)
+ (preprocess
+  (pps ppx_let))
  (modules fib))

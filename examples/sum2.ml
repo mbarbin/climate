@@ -1,9 +1,8 @@
-open Climate
+open Climate_std
 
 let main =
-  let open Arg_parser in
-  let+ a = pos_req 0 int
-  and+ b = pos_req 1 int in
+  let%map_open.Command a = Arg.pos_req 0 Param.int
+  and b = Arg.pos_req 1 Param.int in
   print_endline (Printf.sprintf "%d" (a + b))
 ;;
 

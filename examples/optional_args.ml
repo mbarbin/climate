@@ -1,9 +1,8 @@
-open Climate
+open Climate_std
 
 let term =
-  let open Arg_parser in
-  let+ x = named_with_default [ "x" ] string ~default:"foo"
-  and+ y = named_with_default [ "y" ] string ~default:"bar" in
+  let%map_open.Command x = Arg.named_with_default [ "x" ] Param.string ~default:"foo"
+  and y = Arg.named_with_default [ "y" ] Param.string ~default:"bar" in
   Printf.printf "%s and %s" x y
 ;;
 

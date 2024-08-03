@@ -7,20 +7,18 @@
    . /tmp/completion.sh
    fib <TAB> <TAB> <TAB> <TAB> ...
 *)
-open Climate
+open Climate_std
 
 let () =
-  let open Command in
   let command =
-    singleton
-      (let open Arg_parser in
-       let+ argv0 = argv0
-       and+ _ =
-         pos_all
-           int
+    Command.singleton
+      (let%map_open.Command argv0 = Arg.argv0
+       and _ =
+         Arg.pos_all
+           Param.int
            ~completion:
-             (Completion.reentrant_parse
-                (let+ all = pos_all int in
+             (Arg.Completion.reentrant_parse
+                (let%map.Command all = Arg.pos_all Param.int in
                  let x =
                    match List.rev all with
                    | [] -> 1
@@ -31,9 +29,9 @@ let () =
        in
        argv0)
   in
-  let program_exe_for_reentrant_query = `Other (run command) in
+  let program_exe_for_reentrant_query = `Other (Command.run command) in
   print_endline
-    (completion_script_bash
+    (Command.completion_script_bash
        command
        ~program_name:"fib"
        ~program_exe_for_reentrant_query
