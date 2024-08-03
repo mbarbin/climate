@@ -9,10 +9,10 @@
 *)
 
 let () =
+  let open Command in
   let command =
-    Command.make
-      (let open Command in
-       let+ argv0 = Arg.argv0
+    make
+      (let+ argv0 = Arg.argv0
        and+ _ =
          Arg.pos_all
            Param.int
@@ -29,9 +29,9 @@ let () =
        in
        argv0)
   in
-  let program_exe_for_reentrant_query = `Other (Command.run command) in
+  let program_exe_for_reentrant_query = `Other (run command) in
   print_endline
-    (Command.completion_script_bash
+    (completion_script_bash
        command
        ~program_name:"fib"
        ~program_exe_for_reentrant_query
