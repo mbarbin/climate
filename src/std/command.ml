@@ -28,3 +28,49 @@ module Arg = struct
 end
 
 include Climate.Command
+
+module type Infix_operators_sig = sig
+  type 'a t
+
+  val ( $ ) : ('a -> 'b) t -> 'a t -> 'b t
+  val ( <*> ) : ('a -> 'b) t -> 'a t -> 'b t
+  val ( <* ) : 'a t -> unit t -> 'a t
+  val ( *> ) : unit t -> 'a t -> 'a t
+  val ( >>| ) : 'a t -> ('a -> 'b) -> 'b t
+end
+
+module Infix_operators = struct
+  open Arg
+
+  let ( $ ) = apply
+  let ( <*> ) = apply
+  let ( <* ) a do_b = map (both a do_b) ~f:(fun (a, ()) -> a)
+  let ( *> ) do_a b = map (both do_a b) ~f:(fun ((), b) -> b)
+  let ( >>| ) = ( >>| )
+end
+
+module Let_syntax = struct
+  include struct
+    open Climate.Arg_parser
+
+    let ( let+ ) = ( let+ )
+    let ( and+ ) = ( and+ )
+  end
+
+  include Infix_operators
+
+  module Let_syntax = struct
+    include struct
+      open Climate.Arg_parser
+
+      let map = map
+      let both = both
+    end
+
+    module Open_on_rhs = struct
+      include Infix_operators
+      module Param = Param
+      module Arg = Arg
+    end
+  end
+end
