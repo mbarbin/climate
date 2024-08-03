@@ -13,4 +13,4 @@ let main =
   print_endline (Printf.sprintf "%d" (List.fold_left args ~init ~f:op))
 ;;
 
-let () = Command.singleton main |> Command.run
+let () = Command.make main |> Command.run

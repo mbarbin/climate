@@ -58,7 +58,7 @@ let rec to_command t =
          ])
 ;;
 
-let singleton ?desc arg_parser = Singleton { desc; arg_parser }
+let make ?desc arg_parser = Singleton { desc; arg_parser }
 
 let group ?default_arg_parser ?desc ?(hidden = []) commands =
   Group { default_arg_parser; desc; hidden; commands }

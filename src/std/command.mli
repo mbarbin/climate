@@ -212,7 +212,7 @@ type 'a t
 
 (** Declare a single command. Performs some checks that the parser is
     well-formed and raises a [Spec_error.E] if iat's invalid. *)
-val singleton : ?desc:string -> 'a Arg.t -> 'a t
+val make : ?desc:string -> 'a Arg.t -> 'a t
 
 (** [group children] returns a command with a hierarchy of subcommands, the
     leaves of which will be either singletons or empty groups (groups with an

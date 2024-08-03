@@ -9,8 +9,8 @@ let term name =
 let () =
   let open Command in
   group
-    [ "foo", singleton (term "foo")
-    ; "bar", group ~default_arg_parser:(term "bar") [ "baz", singleton (term "baz") ]
+    [ "foo", make (term "foo")
+    ; "bar", group ~default_arg_parser:(term "bar") [ "baz", make (term "baz") ]
     ]
   |> run
 ;;

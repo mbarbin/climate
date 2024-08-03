@@ -6,4 +6,4 @@ let term =
   Printf.printf "%s and %s" x y
 ;;
 
-let () = Command.singleton term |> Command.run
+let () = Command.make term |> Command.run

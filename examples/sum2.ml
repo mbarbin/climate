@@ -6,4 +6,4 @@ let main =
   print_endline (Printf.sprintf "%d" (a + b))
 ;;
 
-let () = Command.singleton main |> Command.run
+let () = Command.make main |> Command.run

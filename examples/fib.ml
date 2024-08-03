@@ -11,7 +11,7 @@ open Climate_std
 
 let () =
   let command =
-    Command.singleton
+    Command.make
       (let%map_open.Command argv0 = Arg.argv0
        and _ =
          Arg.pos_all
