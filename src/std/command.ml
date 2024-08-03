@@ -33,35 +33,56 @@ type 'a t =
       ; desc : string option
       ; hidden : (string * 'a t) list
       ; commands : (string * 'a t) list
+      ; mutable cached : 'a Climate.Command.t option
       }
   | Command of 'a Climate.Command.t
   | Singleton of
       { desc : string option
       ; arg_parser : 'a Climate.Arg_parser.t
+      ; mutable cached : 'a Climate.Command.t option
       }
 
 let rec to_command t =
   match t with
   | Command t -> t
-  | Singleton { desc; arg_parser } -> Climate.Command.singleton ?desc arg_parser
-  | Group { default_arg_parser; desc; hidden; commands } ->
-    Climate.Command.group
-      ?default_arg_parser
-      ?desc
-      (List.concat
-         [ hidden
-           |> List.map (fun (name, t) ->
-             Climate.Command.subcommand ~hidden:true name (to_command t))
-         ; commands
-           |> List.map (fun (name, t) ->
-             Climate.Command.subcommand ~hidden:false name (to_command t))
-         ])
+  | Singleton ({ desc; arg_parser; cached } as r) ->
+    (match cached with
+     | Some command -> command
+     | None ->
+       let cached = Climate.Command.singleton ?desc arg_parser in
+       r.cached <- Some cached;
+       cached)
+  | Group ({ default_arg_parser; desc; hidden; commands; cached } as r) ->
+    (match cached with
+     | Some command -> command
+     | None ->
+       let cached =
+         Climate.Command.group
+           ?default_arg_parser
+           ?desc
+           (List.concat
+              [ hidden
+                |> List.map (fun (name, t) ->
+                  Climate.Command.subcommand ~hidden:true name (to_command t))
+              ; commands
+                |> List.map (fun (name, t) ->
+                  Climate.Command.subcommand ~hidden:false name (to_command t))
+              ])
+       in
+       r.cached <- Some cached;
+       cached)
 ;;
 
-let make ?desc arg_parser = Singleton { desc; arg_parser }
+let make ?desc arg_parser =
+  let t = Singleton { desc; arg_parser; cached = None } in
+  ignore (to_command t : _ Climate.Command.t);
+  t
+;;
 
 let group ?default_arg_parser ?desc ?(hidden = []) commands =
-  Group { default_arg_parser; desc; hidden; commands }
+  let t = Group { default_arg_parser; desc; hidden; commands; cached = None } in
+  ignore (to_command t : _ Climate.Command.t);
+  t
 ;;
 
 let print_completion_script_bash = Command Climate.Command.print_completion_script_bash
