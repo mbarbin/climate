@@ -107,9 +107,12 @@ let completion_script_bash
 let eval ?eval_config t raw = Climate.Command.eval ?eval_config (to_command t) raw
 let run ?eval_config t = Climate.Command.run ?eval_config (to_command t)
 
-include struct
+module Std = struct
   open Climate.Arg_parser
 
   let ( let+ ) = ( let+ )
   let ( and+ ) = ( and+ )
+
+  module Arg = Arg
+  module Param = Param
 end

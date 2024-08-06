@@ -280,5 +280,12 @@ val eval : ?eval_config:Climate.Eval_config.t -> 'a t -> Climate.Command_line.Ra
     handled by printing an error message to stderr and exiting. *)
 val run : ?eval_config:Climate.Eval_config.t -> 'a t -> 'a
 
-val ( let+ ) : 'a Arg.t -> ('a -> 'b) -> 'b Arg.t
-val ( and+ ) : 'a Arg.t -> 'b Arg.t -> ('a * 'b) Arg.t
+module Std : sig
+  (** A module to be open when defining commands. *)
+
+  module Arg = Arg
+  module Param = Param
+
+  val ( let+ ) : 'a Arg.t -> ('a -> 'b) -> 'b Arg.t
+  val ( and+ ) : 'a Arg.t -> 'b Arg.t -> ('a * 'b) Arg.t
+end

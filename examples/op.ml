@@ -1,7 +1,7 @@
 open Stdlib.StdLabels
 
 let main =
-  let open Command in
+  let open Command.Std in
   let+ op = Arg.pos_req 0 Param.string
   and+ args = Arg.pos_right 1 Param.int in
   let init, op =

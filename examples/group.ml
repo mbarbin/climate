@@ -1,5 +1,5 @@
 let term name =
-  let open Command in
+  let open Command.Std in
   let+ x = Arg.named_req [ "x" ] Param.string
   and+ y = Arg.named_req [ "y" ] Param.string in
   print_endline (Printf.sprintf "%s %s %s" name x y)
